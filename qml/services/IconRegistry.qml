@@ -1,7 +1,6 @@
 pragma Singleton
 import QtQuick
 import Quickshell
-import qs.modules.functions
 
 /*
     This registry is only used to get app details for wm classes.
@@ -10,12 +9,45 @@ import qs.modules.functions
 Singleton {
     id: registry
 
-    property var apps: []
     property var classToIcon: ({})
     property var desktopIdToIcon: ({})
     property var nameToIcon: ({})
 
-    signal ready
+    function fileExists(path) {
+        const req = new XMLHttpRequest();
+        req.open("HEAD", "file://" + path, false);
+        req.send();
+        return req.status === 200;
+    }
+
+    function resolveIcon(className) {
+        if (!className || className.length === 0)
+            return "";
+
+        const original = className;
+        const normalized = className.toLowerCase();
+        if (Quickshell.iconPath(original, true))
+            return original;
+
+        if (Quickshell.iconPath(normalized, true))
+            return normalized;
+
+        const dashed = normalized.replace(/\s+/g, "-");
+        if (Quickshell.iconPath(dashed, true))
+            return dashed;
+
+        if (Quickshell.iconPath(normalized + "-symbolic", true))
+            return normalized + "-symbolic";
+
+        if (Quickshell.iconPath(dashed + "-symbolic", true))
+            return dashed + "-symbolic";
+
+        const ext = original.split(".").pop().toLowerCase();
+        if (Quickshell.iconPath(ext, true))
+            return ext;
+
+        return "";
+    }
 
     function iconForDesktopIcon(icon) {
         if (!icon)
@@ -43,7 +75,7 @@ Singleton {
         const exts = ["png", "svg", "xpm"];
         for (const ext of exts) {
             const path = "/usr/share/pixmaps/" + icon + "." + ext;
-            if (FileUtils.fileExists(path))
+            if (fileExists(path))
                 return "file://" + path;
         }
 
@@ -86,51 +118,11 @@ Singleton {
         }
 
         // final fallback to theme resolution
-        const resolved = FileUtils.resolveIcon(id);
+        const resolved = resolveIcon(id);
         return iconForDesktopIcon(resolved);
     }
 
-    // Extra helper: resolve icon using any compositor metadata we might have.
-    function iconForAppMeta(meta) {
-        if (!meta)
-            return Quickshell.iconPath("application-x-executable");
-
-        const candidates = [meta.appId, meta.class, meta.initialClass, meta.desktopId, meta.title, meta.name];
-
-        for (let c of candidates) {
-            const icon = iconForClass(c);
-            if (icon !== "")
-                return icon;
-        }
-
-        // fallback: try compositor provided icon name
-        if (meta.icon)
-            return iconForDesktopIcon(meta.icon);
-
-        // hard fallback icons (guaranteed to exist in most themes)
-        const fallbacks = ["application-x-executable", "application-default-icon", "window"];
-
-        for (let f of fallbacks) {
-            const resolved = Quickshell.iconPath(f);
-            if (resolved)
-                return resolved;
-        }
-
-        return "";
-    }
-
-    function registerApp(displayName, comment, icon, exec, wmClass, desktopId) {
-        const entry = {
-            name: displayName,
-            comment: comment,
-            icon: icon,
-            exec: exec,
-            wmClass: wmClass,
-            desktopId: desktopId
-        };
-
-        apps.push(entry);
-
+    function registerApp(displayName, icon, wmClass, desktopId) {
         if (wmClass)
             classToIcon[wmClass.toLowerCase()] = icon;
 
@@ -159,15 +151,12 @@ Singleton {
         registry.classToIcon = {};
         registry.desktopIdToIcon = {};
         registry.nameToIcon = {};
-        registry.apps = [];
 
         for (let entry of entries) {
             if (entry.noDisplay)
                 continue;
-            registry.registerApp(entry.name || "", entry.comment || "", entry.icon || "", entry.execString || "", entry.startupWMClass || "", entry.id || "");
+            registry.registerApp(entry.name || "", entry.icon || "", entry.startupWMClass || "", entry.id || "");
         }
-
-        registry.ready();
     }
 
     Connections {
