@@ -3,15 +3,15 @@ import QtQuick
 
 Text {
 
-  property string fontFamily: Theme.fontFamily
+    property string fontFamily: Theme.fontFamily
 
-  text: Qt.formatDateTime(clock.date, Config.clockFormat)
-  color: Theme.fg
+    text: Qt.formatDateTime(clock.date, Config.clockFormat)
+    color: Theme.fg
 
-  font {
-    family: Theme.fontFamily
-    weight: 500
-    pixelSize: 10 * Config.pillScale
-    letterSpacing: -0.5
-  }
+    font {
+        family: Theme.fontFamily
+        weight: 500
+        pixelSize: 11 * Config.pillScale
+        letterSpacing: -0.5
+    }
 }
