@@ -33,7 +33,7 @@ Singleton {
       property bool avoidDuplicateNotifications: true
       property string defaultTerminal: "kitty"
       property real pillScale: 1.0
-      property string wallpapersDir: Quickshell.env("HOME") + "/Pictures/wallpapers"
+      property string wallpapersDir: Quickshell.env("HOME") + "/Pictures/Wallpapers"
       property bool wsCloseOnWallpaperSet: true
     }
   }

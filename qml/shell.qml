@@ -11,7 +11,72 @@ import Quickshell.Services.Notifications
 
 ShellRoot {
 
-  IpcHandler {
+  GlobalShortcut {
+      appid: "chillpill-shell"
+      name: "controlCenter"
+      description: "Toggle ChillPill control center"
+
+      onPressed: {
+        box.controlCenter = !box.controlCenter
+        box.miniDashboard = false
+        box.cliphistOpen = false
+        box.appLauncher = false
+        box.wallpaperSwitcherOpen = false
+      }
+  }
+
+  GlobalShortcut {
+      appid: "chillpill-shell"
+      name: "wallpaperSwitcher"
+      description: "Toggle ChillPill wallpaper switcher"
+      onPressed: {
+        box.controlCenter = false
+        box.miniDashboard = false
+        box.cliphistOpen = false
+        box.appLauncher = false
+        box.wallpaperSwitcherOpen = !box.wallpaperSwitcherOpen 
+        }
+  }
+
+  GlobalShortcut {
+    appid: "chillpill-shell"
+    name: "cliphist"
+    description: "Toggle ChillPill cliphist"
+    onPressed: {
+        box.controlCenter = false
+        box.miniDashboard = false
+        box.cliphistOpen = !box.cliphistOpen
+        box.appLauncher = false
+        box.wallpaperSwitcherOpen = false
+    }
+  }
+
+  GlobalShortcut {
+    appid: "chillpill-shell"
+    name: "minidash"
+    description: "Toggle ChillPill miniDashboard"
+    onPressed: {
+        box.controlCenter = false 
+        box.miniDashboard = !box.miniDashboard 
+        box.cliphistOpen = false 
+        box.appLauncher = false 
+        box.wallpaperSwitcherOpen = false 
+    }
+  }
+  GlobalShortcut {
+    appid: "chillpill-shell"
+    name: "launcher"
+    description: "Toggle ChillPill app launcher"
+    onPressed: {
+        box.controlCenter = false 
+        box.miniDashboard = false 
+        box.cliphistOpen = false 
+        box.appLauncher = !box.appLauncher 
+        box.wallpaperSwitcherOpen = false 
+    }
+  }
+
+    IpcHandler {
       target: "cliphist"
       function toggle(): void { box.controlCenter = false; box.miniDashboard = false; box.cliphistOpen = !box.cliphistOpen; box.appLauncher = false; box.wallpaperSwitcherOpen = false }
       function show(): void { box.controlCenter = false; box.miniDashboard = false; box.cliphistOpen = true; }

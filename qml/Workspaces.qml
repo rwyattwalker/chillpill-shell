@@ -33,7 +33,7 @@ RowLayout {
         color: wsButton.isActive ? "#ffffff" : "#dae0ea"
         font {
           family: Theme.fontFamily
-          pixelSize: 9 * Config.pillScale
+          pixelSize: 11 * Config.pillScale
           weight: 300
         }
       }

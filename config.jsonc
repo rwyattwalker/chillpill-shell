@@ -3,8 +3,8 @@
   "clockFormat": "hh:mm",
   "pillTopMargin": 9,
   "pillBottomMargin": 26,
-  "textFontFamily": "Monocraft",
-  "nerdFontFamily": "JetBrainsMono Nerd Font Propo",
+  "textFontFamily": "JetBrainsMono Nerd Font",
+  "nerdFontFamily": "JetBrainsMono Nerd Font",
   "timerPresets": [1, 5, 10, 15, 30],
   "mediaPopupDuration": 2000,
   "maxWorkspaces": 5,
@@ -19,6 +19,6 @@
   "avoidDuplicateNotifications": true,
   "defaultTerminal": "kitty",
   "pillScale": 1.0,
-  "wallpapersDir": "~/Pictures/wallpapers",
+  "wallpapersDir": "~/Pictures/Wallpapers",
   "wsCloseOnWallpaperSet": true
 }

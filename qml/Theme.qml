@@ -18,6 +18,6 @@ Singleton {
     property string accent: "#979797"
     property string coverArtGlowShadow: "#80aae6" // hardcored for now
 
-    property int fontSizeBase: 13
+    property int fontSizeBase: 15
     property int fontSize: Math.round(fontSizeBase * Config.pillScale)
 }

@@ -31,3 +31,11 @@ add_custom_command(TARGET IslandBackendPlugin POST_BUILD
     COMMAND sed -i "/^prefer/d" ${CMAKE_CURRENT_BINARY_DIR}/qmldir
     COMMENT "Stripping prefer line from generated qmldir"
 )
+
+  install(TARGETS IslandBackend IslandBackendPlugin
+      LIBRARY DESTINATION lib/qt-6/qml/IslandBackend
+  )
+
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/qmldir
+      DESTINATION lib/qt-6/qml/IslandBackend
+  )

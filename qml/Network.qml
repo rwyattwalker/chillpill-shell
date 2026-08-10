@@ -34,7 +34,7 @@ RowLayout {
 
     font {
       family: "FiraCode Nerd Font Propo"
-      pixelSize: 10 * Config.pillScale
+      pixelSize: 11 * Config.pillScale
     }
   }
 
@@ -45,7 +45,7 @@ RowLayout {
           return root.active.name
       }
       color: Theme.fg
-      font { family: Theme.fontFamily; pixelSize: 10 * Config.pillScale; weight: 500 }
+      font { family: Theme.fontFamily; pixelSize: 11 * Config.pillScale; weight: 500 }
       elide: Text.ElideRight
       Layout.maximumWidth: 90 * Config.pillScale
   }

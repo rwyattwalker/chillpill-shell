@@ -100,7 +100,7 @@ Item {
 
     Process {
         id: listProc
-        command: ["bash", "-c", "/usr/share/chillpill-shell/scripts/cliphist-img.sh"]
+        command: ["bash", "-c", Quickshell.env("CHILLPILL_SHELL_DIR") + "/scripts/cliphist-img.sh"]
         running: false
         stdout: StdioCollector {
             onStreamFinished: {
@@ -170,7 +170,7 @@ Item {
           Text {
               text: "Clipboard History"
               color: Theme.fg
-              font { family: Theme.fontFamily; pixelSize: 11; weight: 700 }
+              font { family: Theme.fontFamily; pixelSize: 12; weight: 700 }
               anchors.left: parent.left
               anchors.leftMargin: 4
           }
@@ -181,7 +181,7 @@ Item {
             text: (root.filteredEntries.length === 0 ? 0 : root.selectedIndex + 1)
                    + " / " + root.filteredEntries.length + " (" + total + ")"
             color: "#999999"
-            font { family: Theme.fontFamily; pixelSize: 9; weight: 300 }
+            font { family: Theme.fontFamily; pixelSize: 11; weight: 300 }
             anchors.right: parent.right
             anchors.rightMargin: 6
           }
