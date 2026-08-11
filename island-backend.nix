@@ -8,7 +8,16 @@
 stdenv.mkDerivation {
   pname = "island-backend";
   version = "1.0.0";
-  src = ./.;
+  src = builtins.path {
+    path = ./.;
+    name = "chillpill-shell-src";
+    filter =
+      path: type:
+      let
+        base = baseNameOf path;
+      in
+      base != "build" && base != "result" && base != ".cache";
+  };
   nativeBuildInputs = [
     cmake
     pkg-config
@@ -19,4 +28,17 @@ stdenv.mkDerivation {
     qt6.qtbase
     qt6.qtdeclarative
   ];
+
+  installPhase = ''
+    runHook preInstall
+
+    mkdir -p $out/lib/qt-6/qml/IslandBackend
+
+    cp ./libIslandBackend.so $out/lib/qt-6/qml/IslandBackend/
+    cp ./IslandBackend/libIslandBackendPlugin.so $out/lib/qt-6/qml/IslandBackend/
+    cp ./IslandBackend/qmldir $out/lib/qt-6/qml/IslandBackend/
+    cp ./IslandBackend/IslandBackend.qmltypes $out/lib/qt-6/qml/IslandBackend/
+
+    runHook postInstall
+  '';
 }

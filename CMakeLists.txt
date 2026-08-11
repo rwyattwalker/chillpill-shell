@@ -11,6 +11,7 @@ qt_add_qml_module(IslandBackend
     URI IslandBackend
     VERSION 1.0
     PLUGIN_TARGET IslandBackendPlugin
+    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/IslandBackend
     SOURCES
         backend/WifiController.h
         backend/WifiController.cpp
@@ -28,14 +29,7 @@ set_target_properties(IslandBackend IslandBackendPlugin PROPERTIES
 )
 
 add_custom_command(TARGET IslandBackendPlugin POST_BUILD
-    COMMAND sed -i "/^prefer/d" ${CMAKE_CURRENT_BINARY_DIR}/qmldir
+    COMMAND sed -i "/^prefer/d" ${CMAKE_CURRENT_BINARY_DIR}/IslandBackend/qmldir
     COMMENT "Stripping prefer line from generated qmldir"
 )
 
-  install(TARGETS IslandBackend IslandBackendPlugin
-      LIBRARY DESTINATION lib/qt-6/qml/IslandBackend
-  )
-
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/qmldir
-      DESTINATION lib/qt-6/qml/IslandBackend
-  )

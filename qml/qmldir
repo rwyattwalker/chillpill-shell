@@ -1,0 +1,29 @@
+module qs
+AppLauncher 1.0 AppLauncher.qml
+Bandwidth 1.0 Bandwidth.qml
+Battery 1.0 Battery.qml
+Brightness 1.0 Brightness.qml
+CalendarBox 1.0 CalendarBox.qml
+CcButtons 1.0 CcButtons.qml
+Cliphist 1.0 Cliphist.qml
+Clock 1.0 Clock.qml
+singleton Config 1.0 Config.qml
+CountdownModule 1.0 CountdownModule.qml
+Datetime 1.0 Datetime.qml
+FullscreenOsd 1.0 FullscreenOsd.qml
+IpStatus 1.0 IpStatus.qml
+MediaPlayer 1.0 MediaPlayer.qml
+MediaPopup 1.0 MediaPopup.qml
+MprisModule 1.0 MprisModule.qml
+Network 1.0 Network.qml
+NotificationModule 1.0 NotificationModule.qml
+NotificationPopup 1.0 NotificationPopup.qml
+OsdBar 1.0 OsdBar.qml
+singleton Theme 1.0 Theme.qml
+Volume 1.0 Volume.qml
+WallpaperSwitcher 1.0 WallpaperSwitcher.qml
+WeatherIndicator 1.0 WeatherIndicator.qml
+singleton WeatherModule 1.0 WeatherModule.qml
+WeatherPopup 1.0 WeatherPopup.qml
+WifiPanel 1.0 WifiPanel.qml
+Workspaces 1.0 Workspaces.qml

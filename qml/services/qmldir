@@ -1,0 +1,3 @@
+module qs.services
+singleton IconRegistry 1.0 IconRegistry.qml
+singleton WorkspaceWindows 1.0 WorkspaceWindows.qml

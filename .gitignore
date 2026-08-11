@@ -1,2 +1,5 @@
 .builds_hash
 /result
+/qml/.qmlls.ini
+/build/
+.cache/
