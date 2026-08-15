@@ -13,6 +13,21 @@ ShellRoot {
 
     GlobalShortcut {
         appid: "chillpill-shell"
+        name: "togglePill"
+        description: "Toggle ChillPill"
+
+        onPressed: {
+            pillShown = !pillShown;
+            box.controlCenter = false;
+            box.miniDashboard = false;
+            box.cliphistOpen = false;
+            box.appLauncher = false;
+            box.wallpaperSwitcherOpen = false;
+        }
+    }
+
+    GlobalShortcut {
+        appid: "chillpill-shell"
         name: "controlCenter"
         description: "Toggle ChillPill control center"
 
@@ -177,6 +192,7 @@ ShellRoot {
         }
     }
 
+    property bool pillShown: true
     property string bg: Theme.bg
     property string fg: Theme.fg
     property string fontFamily: Theme.fontFamily
@@ -220,7 +236,7 @@ ShellRoot {
         }
 
         // fixed gap of the active window for the top bar
-        exclusiveZone: Config.pillBottomMargin
+        exclusiveZone: pillShown ? Config.pillBottomMargin : 0
         color: "transparent"
 
         // Mask input to only the capsule
@@ -253,9 +269,52 @@ ShellRoot {
             id: box
             anchors.top: parent.top
             anchors.horizontalCenter: parent.horizontalCenter
-            opacity: (!fullscreenActive && !notifFullscreenMode) ? 1 : 0
+            opacity: (!fullscreenActive && !notifFullscreenMode && pillShown) ? 1 : 0
             visible: opacity > 0
             clip: true
+            property real slideY: pillShown ? 0 : -box.height - Config.pillTopMargin
+            property real squashY: pillShown ? 1.0 : 0.65
+            property real squashX: pillShown ? 1.0 : 0.96
+
+            transform: [
+                Translate {
+                    y: box.slideY
+                },
+                Scale {
+                    origin.x: box.width / 2
+                    origin.y: 0
+                    xScale: box.squashX
+                    yScale: box.squashY
+                }
+            ]
+
+            Behavior on slideY {
+                NumberAnimation {
+                    duration: 250
+                    easing.type: Easing.OutExpo
+                }
+            }
+
+            Behavior on squashY {
+                NumberAnimation {
+                    duration: 260
+                    easing.type: Easing.OutBack
+                    easing.overshoot: 0.7
+                }
+            }
+
+            Behavior on squashX {
+                NumberAnimation {
+                    duration: 220
+                    easing.type: Easing.OutExpo
+                }
+            }
+
+            Behavior on opacity {
+                NumberAnimation {
+                    duration: 160
+                }
+            }
 
             property bool appLauncher: false
             property bool hovered: false
