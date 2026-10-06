@@ -1365,7 +1365,6 @@ ShellRoot {
                             source: avatarClip.imgPath
                             fillMode: Image.PreserveAspectCrop
                             asynchronous: false
-                            sourceSize: Qt.size(avatarSize, avatarSize)
                         }
                     }
 
