@@ -10,6 +10,20 @@ import Quickshell.Services.UPower
 import Quickshell.Services.Notifications
 
 ShellRoot {
+    id: root
+
+    property var primaryBox: null
+
+    function closeTransientSurfaces(targetBox) {
+        if (!targetBox)
+            return;
+
+        targetBox.controlCenter = false;
+        targetBox.miniDashboard = false;
+        targetBox.cliphistOpen = false;
+        targetBox.appLauncher = false;
+        targetBox.wallpaperSwitcherOpen = false;
+    }
 
     GlobalShortcut {
         appid: "chillpill-shell"
@@ -17,12 +31,11 @@ ShellRoot {
         description: "Toggle ChillPill"
 
         onPressed: {
+            if (!root.primaryBox)
+                return;
+
             pillShown = !pillShown;
-            box.controlCenter = false;
-            box.miniDashboard = false;
-            box.cliphistOpen = false;
-            box.appLauncher = false;
-            box.wallpaperSwitcherOpen = false;
+            root.closeTransientSurfaces(root.primaryBox);
         }
     }
 
@@ -32,11 +45,14 @@ ShellRoot {
         description: "Toggle ChillPill control center"
 
         onPressed: {
-            box.controlCenter = !box.controlCenter;
-            box.miniDashboard = false;
-            box.cliphistOpen = false;
-            box.appLauncher = false;
-            box.wallpaperSwitcherOpen = false;
+            if (!root.primaryBox)
+                return;
+
+            root.primaryBox.controlCenter = !root.primaryBox.controlCenter;
+            root.primaryBox.miniDashboard = false;
+            root.primaryBox.cliphistOpen = false;
+            root.primaryBox.appLauncher = false;
+            root.primaryBox.wallpaperSwitcherOpen = false;
         }
     }
 
@@ -45,11 +61,14 @@ ShellRoot {
         name: "wallpaperSwitcher"
         description: "Toggle ChillPill wallpaper switcher"
         onPressed: {
-            box.controlCenter = false;
-            box.miniDashboard = false;
-            box.cliphistOpen = false;
-            box.appLauncher = false;
-            box.wallpaperSwitcherOpen = !box.wallpaperSwitcherOpen;
+            if (!root.primaryBox)
+                return;
+
+            root.primaryBox.controlCenter = false;
+            root.primaryBox.miniDashboard = false;
+            root.primaryBox.cliphistOpen = false;
+            root.primaryBox.appLauncher = false;
+            root.primaryBox.wallpaperSwitcherOpen = !root.primaryBox.wallpaperSwitcherOpen;
         }
     }
 
@@ -58,11 +77,14 @@ ShellRoot {
         name: "cliphist"
         description: "Toggle ChillPill cliphist"
         onPressed: {
-            box.controlCenter = false;
-            box.miniDashboard = false;
-            box.cliphistOpen = !box.cliphistOpen;
-            box.appLauncher = false;
-            box.wallpaperSwitcherOpen = false;
+            if (!root.primaryBox)
+                return;
+
+            root.primaryBox.controlCenter = false;
+            root.primaryBox.miniDashboard = false;
+            root.primaryBox.cliphistOpen = !root.primaryBox.cliphistOpen;
+            root.primaryBox.appLauncher = false;
+            root.primaryBox.wallpaperSwitcherOpen = false;
         }
     }
 
@@ -71,11 +93,14 @@ ShellRoot {
         name: "minidash"
         description: "Toggle ChillPill miniDashboard"
         onPressed: {
-            box.controlCenter = false;
-            box.miniDashboard = !box.miniDashboard;
-            box.cliphistOpen = false;
-            box.appLauncher = false;
-            box.wallpaperSwitcherOpen = false;
+            if (!root.primaryBox)
+                return;
+
+            root.primaryBox.controlCenter = false;
+            root.primaryBox.miniDashboard = !root.primaryBox.miniDashboard;
+            root.primaryBox.cliphistOpen = false;
+            root.primaryBox.appLauncher = false;
+            root.primaryBox.wallpaperSwitcherOpen = false;
         }
     }
     GlobalShortcut {
@@ -83,112 +108,154 @@ ShellRoot {
         name: "launcher"
         description: "Toggle ChillPill app launcher"
         onPressed: {
-            box.controlCenter = false;
-            box.miniDashboard = false;
-            box.cliphistOpen = false;
-            box.appLauncher = !box.appLauncher;
-            box.wallpaperSwitcherOpen = false;
+            if (!root.primaryBox)
+                return;
+
+            root.primaryBox.controlCenter = false;
+            root.primaryBox.miniDashboard = false;
+            root.primaryBox.cliphistOpen = false;
+            root.primaryBox.appLauncher = !root.primaryBox.appLauncher;
+            root.primaryBox.wallpaperSwitcherOpen = false;
         }
     }
 
     IpcHandler {
         target: "cliphist"
         function toggle(): void {
-            box.controlCenter = false;
-            box.miniDashboard = false;
-            box.cliphistOpen = !box.cliphistOpen;
-            box.appLauncher = false;
-            box.wallpaperSwitcherOpen = false;
+            if (!root.primaryBox)
+                return;
+
+            root.primaryBox.controlCenter = false;
+            root.primaryBox.miniDashboard = false;
+            root.primaryBox.cliphistOpen = !root.primaryBox.cliphistOpen;
+            root.primaryBox.appLauncher = false;
+            root.primaryBox.wallpaperSwitcherOpen = false;
         }
         function show(): void {
-            box.controlCenter = false;
-            box.miniDashboard = false;
-            box.cliphistOpen = true;
+            if (!root.primaryBox)
+                return;
+
+            root.primaryBox.controlCenter = false;
+            root.primaryBox.miniDashboard = false;
+            root.primaryBox.cliphistOpen = true;
         }
         function hide(): void {
-            box.cliphistOpen = false;
+            if (root.primaryBox)
+                root.primaryBox.cliphistOpen = false;
         }
     }
 
     IpcHandler {
         target: "controlCenter"
         function toggle(): void {
-            box.controlCenter = !box.controlCenter;
-            box.miniDashboard = false;
-            box.cliphistOpen = false;
-            box.appLauncher = false;
-            box.wallpaperSwitcherOpen = false;
+            if (!root.primaryBox)
+                return;
+
+            root.primaryBox.controlCenter = !root.primaryBox.controlCenter;
+            root.primaryBox.miniDashboard = false;
+            root.primaryBox.cliphistOpen = false;
+            root.primaryBox.appLauncher = false;
+            root.primaryBox.wallpaperSwitcherOpen = false;
         }
         function show(): void {
-            box.controlCenter = true;
-            box.miniDashboard = false;
-            box.cliphistOpen = false;
+            if (!root.primaryBox)
+                return;
+
+            root.primaryBox.controlCenter = true;
+            root.primaryBox.miniDashboard = false;
+            root.primaryBox.cliphistOpen = false;
         }
         function hide(): void {
-            box.controlCenter = false;
+            if (root.primaryBox)
+                root.primaryBox.controlCenter = false;
         }
     }
 
     IpcHandler {
         target: "miniDashboard"
         function toggle(): void {
-            box.controlCenter = false;
-            box.miniDashboard = !box.miniDashboard;
-            box.cliphistOpen = false;
-            box.appLauncher = false;
-            box.wallpaperSwitcherOpen = false;
+            if (!root.primaryBox)
+                return;
+
+            root.primaryBox.controlCenter = false;
+            root.primaryBox.miniDashboard = !root.primaryBox.miniDashboard;
+            root.primaryBox.cliphistOpen = false;
+            root.primaryBox.appLauncher = false;
+            root.primaryBox.wallpaperSwitcherOpen = false;
         }
         function show(): void {
-            box.controlCenter = false;
-            box.miniDashboard = true;
-            box.cliphistOpen = false;
-            box.wallpaperSwitcherOpen = false;
+            if (!root.primaryBox)
+                return;
+
+            root.primaryBox.controlCenter = false;
+            root.primaryBox.miniDashboard = true;
+            root.primaryBox.cliphistOpen = false;
+            root.primaryBox.wallpaperSwitcherOpen = false;
         }
         function hide(): void {
-            box.miniDashboard = false;
+            if (root.primaryBox)
+                root.primaryBox.miniDashboard = false;
         }
     }
 
     IpcHandler {
         target: "appLauncher"
         function toggle(): void {
-            box.controlCenter = false;
-            box.miniDashboard = false;
-            box.cliphistOpen = false;
-            box.appLauncher = !box.appLauncher;
-            box.wallpaperSwitcherOpen = false;
+            if (!root.primaryBox)
+                return;
+
+            root.primaryBox.controlCenter = false;
+            root.primaryBox.miniDashboard = false;
+            root.primaryBox.cliphistOpen = false;
+            root.primaryBox.appLauncher = !root.primaryBox.appLauncher;
+            root.primaryBox.wallpaperSwitcherOpen = false;
         }
         function show(): void {
-            box.controlCenter = false;
-            box.miniDashboard = false;
-            box.cliphistOpen = false;
-            box.appLauncher = true;
+            if (!root.primaryBox)
+                return;
+
+            root.primaryBox.controlCenter = false;
+            root.primaryBox.miniDashboard = false;
+            root.primaryBox.cliphistOpen = false;
+            root.primaryBox.appLauncher = true;
         }
         function hide(): void {
-            box.appLauncher = false;
-            box.wallpaperSwitcherOpen = false;
+            if (!root.primaryBox)
+                return;
+
+            root.primaryBox.appLauncher = false;
+            root.primaryBox.wallpaperSwitcherOpen = false;
         }
     }
 
     IpcHandler {
         target: "wallpaperSwitcher"
         function toggle(): void {
-            box.controlCenter = false;
-            box.miniDashboard = false;
-            box.cliphistOpen = false;
-            box.appLauncher = false;
-            box.wallpaperSwitcherOpen = !box.wallpaperSwitcherOpen;
+            if (!root.primaryBox)
+                return;
+
+            root.primaryBox.controlCenter = false;
+            root.primaryBox.miniDashboard = false;
+            root.primaryBox.cliphistOpen = false;
+            root.primaryBox.appLauncher = false;
+            root.primaryBox.wallpaperSwitcherOpen = !root.primaryBox.wallpaperSwitcherOpen;
         }
         function show(): void {
-            box.controlCenter = false;
-            box.miniDashboard = false;
-            box.cliphistOpen = false;
-            box.appLauncher = false;
-            box.wallpaperSwitcherOpen = true;
+            if (!root.primaryBox)
+                return;
+
+            root.primaryBox.controlCenter = false;
+            root.primaryBox.miniDashboard = false;
+            root.primaryBox.cliphistOpen = false;
+            root.primaryBox.appLauncher = false;
+            root.primaryBox.wallpaperSwitcherOpen = true;
         }
         function hide(): void {
-            box.appLauncher = false;
-            box.wallpaperSwitcherOpen = false;
+            if (!root.primaryBox)
+                return;
+
+            root.primaryBox.appLauncher = false;
+            root.primaryBox.wallpaperSwitcherOpen = false;
         }
     }
 
@@ -219,11 +286,22 @@ ShellRoot {
     // media player related
     property bool mediaAutoOpened: false
 
-    PanelWindow {
-        id: panelWindow
-        WlrLayershell.layer: WlrLayershell.Top
-        WlrLayershell.keyboardFocus: (box.cliphistOpen || box.appLauncher || box.wallpaperSwitcherOpen) ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
-        implicitHeight: 482
+    Variants {
+        model: Quickshell.screens
+
+        PanelWindow {
+            id: panelWindow
+            property var modelData
+            screen: modelData
+            WlrLayershell.layer: WlrLayershell.Top
+            WlrLayershell.keyboardFocus: (box.cliphistOpen || box.appLauncher || box.wallpaperSwitcherOpen) ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
+            implicitHeight: 482
+
+            Component.onCompleted: root.primaryBox = box
+            Component.onDestruction: {
+                if (root.primaryBox === box)
+                    root.primaryBox = null;
+            }
 
         anchors {
             top: true
@@ -1680,6 +1758,7 @@ ShellRoot {
             }
         }
     }
+    }
 
     MprisModule {
         id: mprisModule
@@ -1705,71 +1784,77 @@ ShellRoot {
         visible: false
     }
 
-    FullscreenOsd {
-        id: fsNotif
-        active: notificationModule.active && notifFullscreenMode
-        visible: notifFullscreenMode
-        cardWidth: 300
-        cardHeight: 52
+    Variants {
+        model: Quickshell.screens
 
-        property var displayNotif: null
+        FullscreenOsd {
+            id: fsNotif
+            property var modelData
+            property var displayNotif: notificationModule.current
 
-        RowLayout {
-            anchors.centerIn: parent
-            spacing: 12
+            screen: modelData
+            active: notificationModule.active && notifFullscreenMode
+            visible: notifFullscreenMode
+            cardWidth: 300
+            cardHeight: 52
 
-            Text {
-                text: String.fromCodePoint(0xf0f3)
-                color: Theme.fg
-                font {
-                    family: Theme.nerdFontFamily
-                    pixelSize: 14
-                }
-                visible: cardIcon.status !== Image.Ready
-            }
-
-            Image {
-                id: cardIcon
-                width: 23
-                height: 23
-                fillMode: Image.PreserveAspectCrop
-                source: {
-                    if (fsNotif.displayNotif && fsNotif.displayNotif.image)
-                        return fsNotif.displayNotif.image;
-                    if (fsNotif.displayNotif && fsNotif.displayNotif.appIcon) {
-                        return fsNotif.displayNotif.appIcon.startsWith("/") ? "file://" + fsNotif.displayNotif.appIcon : "image://icon/" + fsNotif.displayNotif.appIcon;
-                    }
-                    return "";
-                }
-                sourceSize: Qt.size(23, 23)
-                visible: status === Image.Ready
-            }
-
-            ColumnLayout {
-                spacing: 3
+            RowLayout {
+                anchors.centerIn: parent
+                spacing: 12
 
                 Text {
-                    text: fsNotif.displayNotif ? fsNotif.displayNotif.summary : ""
+                    text: String.fromCodePoint(0xf0f3)
                     color: Theme.fg
                     font {
-                        family: Theme.fontFamily
-                        pixelSize: 10
-                        weight: 700
+                        family: Theme.nerdFontFamily
+                        pixelSize: 14
                     }
-                    elide: Text.ElideRight
-                    Layout.maximumWidth: 200
+                    visible: cardIcon.status !== Image.Ready
                 }
 
-                Text {
-                    text: fsNotif.displayNotif ? fsNotif.displayNotif.body : ""
-                    color: "#9b9b9b"
-                    font {
-                        family: Theme.fontFamily
-                        pixelSize: 9
+                Image {
+                    id: cardIcon
+                    width: 23
+                    height: 23
+                    fillMode: Image.PreserveAspectCrop
+                    source: {
+                        if (fsNotif.displayNotif && fsNotif.displayNotif.image)
+                            return fsNotif.displayNotif.image;
+                        if (fsNotif.displayNotif && fsNotif.displayNotif.appIcon) {
+                            return fsNotif.displayNotif.appIcon.startsWith("/") ? "file://" + fsNotif.displayNotif.appIcon : "image://icon/" + fsNotif.displayNotif.appIcon;
+                        }
+                        return "";
                     }
-                    elide: Text.ElideRight
-                    visible: text !== ""
-                    Layout.maximumWidth: 200
+                    sourceSize: Qt.size(23, 23)
+                    visible: status === Image.Ready
+                }
+
+                ColumnLayout {
+                    spacing: 3
+
+                    Text {
+                        text: fsNotif.displayNotif ? fsNotif.displayNotif.summary : ""
+                        color: Theme.fg
+                        font {
+                            family: Theme.fontFamily
+                            pixelSize: 10
+                            weight: 700
+                        }
+                        elide: Text.ElideRight
+                        Layout.maximumWidth: 200
+                    }
+
+                    Text {
+                        text: fsNotif.displayNotif ? fsNotif.displayNotif.body : ""
+                        color: "#9b9b9b"
+                        font {
+                            family: Theme.fontFamily
+                            pixelSize: 9
+                        }
+                        elide: Text.ElideRight
+                        visible: text !== ""
+                        Layout.maximumWidth: 200
+                    }
                 }
             }
         }
@@ -1783,10 +1868,6 @@ ShellRoot {
             } else {
                 notifFullscreenMode = false;
             }
-        }
-        function onCurrentChanged() {
-            if (notificationModule.current)
-                fsNotif.displayNotif = notificationModule.current;
         }
     }
 }
