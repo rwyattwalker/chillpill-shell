@@ -13,55 +13,59 @@ Item {
     property string searchQuery: ""
     property string deletingId: ""
     property string collapsingId: ""
-    property var filteredEntries: searchQuery.length === 0
-        ? entries
-        : entries.filter(e => e.label.toLowerCase().includes(searchQuery.toLowerCase()))
+    property var filteredEntries: searchQuery.length === 0 ? entries : entries.filter(e => e.label.toLowerCase().includes(searchQuery.toLowerCase()))
 
-    signal closeRequested()
+    signal closeRequested
 
     visible: shown
     opacity: shown ? 1 : 0
-    Behavior on opacity { NumberAnimation { duration: 180 } }
+    Behavior on opacity {
+        NumberAnimation {
+            duration: 180
+        }
+    }
 
     onShownChanged: {
         if (shown) {
-            refresh()
-            searchQuery = ""
-            searchInput.text = ""
-            selectedIndex = 0
-            searchInput.forceActiveFocus()
+            refresh();
+            searchQuery = "";
+            searchInput.text = "";
+            selectedIndex = 0;
+            searchInput.forceActiveFocus();
         }
     }
 
     onFilteredEntriesChanged: {
-        selectedIndex = 0
+        selectedIndex = 0;
     }
 
     function refresh() {
-        listProc.running = false
-        listProc.running = true
-        listCountProc.running = false
-        listCountProc.running = true
+        listProc.running = false;
+        listProc.running = true;
+        listCountProc.running = false;
+        listCountProc.running = true;
     }
 
     function copySelected() {
-        if (filteredEntries.length === 0) return
-        let entry = filteredEntries[selectedIndex]
-        copyProc.command = ["sh", "-c", "cliphist decode " + entry.id + " | wl-copy"]
-        copyProc.running = false
-        copyProc.running = true
-        root.closeRequested()
+        if (filteredEntries.length === 0)
+            return;
+        let entry = filteredEntries[selectedIndex];
+        copyProc.command = ["sh", "-c", "cliphist decode " + entry.id + " | wl-copy"];
+        copyProc.running = false;
+        copyProc.running = true;
+        root.closeRequested();
     }
 
     function deleteSelected() {
-        if (filteredEntries.length === 0) return
-        let entry = filteredEntries[selectedIndex]
-        root.deletingId = entry.id
-        deleteProc.command = ["sh", "-c", "printf '%s\\t' \"$1\" | cliphist delete", "_", entry.id]
-        deleteProc.running = false
-        deleteProc.running = true
-        holdRedTimer.entryId = entry.id
-        holdRedTimer.restart()
+        if (filteredEntries.length === 0)
+            return;
+        let entry = filteredEntries[selectedIndex];
+        root.deletingId = entry.id;
+        deleteProc.command = ["sh", "-c", "printf '%s\\t' \"$1\" | cliphist delete", "_", entry.id];
+        deleteProc.running = false;
+        deleteProc.running = true;
+        holdRedTimer.entryId = entry.id;
+        holdRedTimer.restart();
     }
 
     Timer {
@@ -70,9 +74,9 @@ Item {
         interval: 160
         repeat: false
         onTriggered: {
-            root.collapsingId = entryId
-            removeTimer.entryId = entryId
-            removeTimer.restart()
+            root.collapsingId = entryId;
+            removeTimer.entryId = entryId;
+            removeTimer.restart();
         }
     }
 
@@ -82,65 +86,76 @@ Item {
         interval: 220   // matches the collapse animation below
         repeat: false
         onTriggered: {
-            let currentIdx = root.selectedIndex
-            let savedContentY = listView.contentY
-            root.entries = root.entries.filter(e => e.id !== entryId)
-            root.deletingId = ""
-            root.collapsingId = ""
-            let newLength = filteredEntries.length
-            if (newLength === 0) selectedIndex = -1
-            else if (currentIdx >= newLength) selectedIndex = newLength - 1
-            else selectedIndex = currentIdx
+            let currentIdx = root.selectedIndex;
+            let savedContentY = listView.contentY;
+            root.entries = root.entries.filter(e => e.id !== entryId);
+            root.deletingId = "";
+            root.collapsingId = "";
+            let newLength = filteredEntries.length;
+            if (newLength === 0)
+                selectedIndex = -1;
+            else if (currentIdx >= newLength)
+                selectedIndex = newLength - 1;
+            else
+                selectedIndex = currentIdx;
             Qt.callLater(() => {
-                let maxY = Math.max(0, listView.contentHeight - listView.height)
-                listView.contentY = Math.min(savedContentY, maxY)
-            })
+                let maxY = Math.max(0, listView.contentHeight - listView.height);
+                listView.contentY = Math.min(savedContentY, maxY);
+            });
         }
     }
 
     Process {
         id: listProc
-        command: ["bash", "-c", Quickshell.env("CHILLPILL_SHELL_DIR") + "/scripts/cliphist-img.sh"]
+        command: ["bash", "-c", Quickshell.env("NIXPILL_SHELL_DIR") + "/scripts/cliphist-img.sh"]
         running: false
         stdout: StdioCollector {
             onStreamFinished: {
-                let lines = this.text.split("\n").filter(l => l.length > 0)
+                let lines = this.text.split("\n").filter(l => l.length > 0);
                 root.entries = lines.map(line => {
-                    let tabIdx = line.indexOf("\t")
-                    let id = line.substring(0, tabIdx)
-                    let rest = line.substring(tabIdx + 1)
+                    let tabIdx = line.indexOf("\t");
+                    let id = line.substring(0, tabIdx);
+                    let rest = line.substring(tabIdx + 1);
 
-                    let nullIdx = rest.indexOf("\x00")
+                    let nullIdx = rest.indexOf("\x00");
                     if (nullIdx !== -1) {
-                        let label = rest.substring(0, nullIdx)
-                        let iconPart = rest.substring(nullIdx + 1)
-                        let imgPath = iconPart.split("\x1f")[1] || ""
-                        return { id, label, imagePath: imgPath }
+                        let label = rest.substring(0, nullIdx);
+                        let iconPart = rest.substring(nullIdx + 1);
+                        let imgPath = iconPart.split("\x1f")[1] || "";
+                        return {
+                            id,
+                            label,
+                            imagePath: imgPath
+                        };
                     }
 
-                    return { id, label: rest, imagePath: "" }
-                })
+                    return {
+                        id,
+                        label: rest,
+                        imagePath: ""
+                    };
+                });
             }
         }
     }
 
     Process {
-      id: listCountProc
-      command: ["sh", "-c", "cliphist list | wc -l"]
-      running: false
-      stdout: StdioCollector {
-        onStreamFinished: {
-          listCountText.total = this.text.trim();
+        id: listCountProc
+        command: ["sh", "-c", "cliphist list | wc -l"]
+        running: false
+        stdout: StdioCollector {
+            onStreamFinished: {
+                listCountText.total = this.text.trim();
+            }
         }
-      }
     }
 
     Process {
         id: deleteProc
         running: false
         onRunningChanged: if (!running) {
-            listCountProc.running = false
-            listCountProc.running = true
+            listCountProc.running = false;
+            listCountProc.running = true;
         }
     }
 
@@ -165,26 +180,33 @@ Item {
         clip: true
 
         RowLayout {
-          width: parent.width
+            width: parent.width
 
-          Text {
-              text: "Clipboard History"
-              color: Theme.fg
-              font { family: Theme.fontFamily; pixelSize: 12; weight: 700 }
-              anchors.left: parent.left
-              anchors.leftMargin: 4
-          }
+            Text {
+                text: "Clipboard History"
+                color: Theme.fg
+                font {
+                    family: Theme.fontFamily
+                    pixelSize: 12
+                    weight: 700
+                }
+                anchors.left: parent.left
+                anchors.leftMargin: 4
+            }
 
-          Text {
-            id: listCountText
-            property int total: 0
-            text: (root.filteredEntries.length === 0 ? 0 : root.selectedIndex + 1)
-                   + " / " + root.filteredEntries.length + " (" + total + ")"
-            color: "#999999"
-            font { family: Theme.fontFamily; pixelSize: 11; weight: 300 }
-            anchors.right: parent.right
-            anchors.rightMargin: 6
-          }
+            Text {
+                id: listCountText
+                property int total: 0
+                text: (root.filteredEntries.length === 0 ? 0 : root.selectedIndex + 1) + " / " + root.filteredEntries.length + " (" + total + ")"
+                color: "#999999"
+                font {
+                    family: Theme.fontFamily
+                    pixelSize: 11
+                    weight: 300
+                }
+                anchors.right: parent.right
+                anchors.rightMargin: 6
+            }
         }
 
         // search box
@@ -203,7 +225,10 @@ Item {
                 anchors.rightMargin: 8
                 verticalAlignment: TextInput.AlignVCenter
                 color: Theme.fg
-                font { family: Theme.fontFamily; pixelSize: 10 }
+                font {
+                    family: Theme.fontFamily
+                    pixelSize: 10
+                }
                 clip: true
 
                 onTextChanged: root.searchQuery = text
@@ -216,29 +241,27 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                 }
 
-                Keys.onPressed: (event) => {
+                Keys.onPressed: event => {
                     if (event.key === Qt.Key_Down) {
                         if (root.filteredEntries.length > 0) {
-                            root.selectedIndex = (root.selectedIndex + 1) % root.filteredEntries.length
+                            root.selectedIndex = (root.selectedIndex + 1) % root.filteredEntries.length;
                         }
-                        listView.positionViewAtIndex(root.selectedIndex, ListView.Contain)
-                        event.accepted = true
+                        listView.positionViewAtIndex(root.selectedIndex, ListView.Contain);
+                        event.accepted = true;
                     } else if (event.key === Qt.Key_Up) {
                         if (root.filteredEntries.length > 0)
-                            root.selectedIndex = root.selectedIndex <= 0
-                                ? root.filteredEntries.length - 1
-                                : root.selectedIndex - 1
-                        listView.positionViewAtIndex(root.selectedIndex, ListView.Contain)
-                        event.accepted = true
+                            root.selectedIndex = root.selectedIndex <= 0 ? root.filteredEntries.length - 1 : root.selectedIndex - 1;
+                        listView.positionViewAtIndex(root.selectedIndex, ListView.Contain);
+                        event.accepted = true;
                     } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                        root.copySelected()
-                        event.accepted = true
+                        root.copySelected();
+                        event.accepted = true;
                     } else if (event.key === Qt.Key_Escape) {
-                        event.accepted = true
-                        root.closeRequested()
+                        event.accepted = true;
+                        root.closeRequested();
                     } else if (event.key === Qt.Key_Delete) {
-                        root.deleteSelected()
-                        event.accepted = true
+                        root.deleteSelected();
+                        event.accepted = true;
                     }
                 }
             }
@@ -254,7 +277,13 @@ Item {
             highlightFollowsCurrentItem: false
             highlightMoveDuration: 80
 
-            removeDisplaced: Transition { NumberAnimation { properties: "y"; duration: 150; easing.type: Easing.OutCubic } } 
+            removeDisplaced: Transition {
+                NumberAnimation {
+                    properties: "y"
+                    duration: 150
+                    easing.type: Easing.OutCubic
+                }
+            }
 
             delegate: Rectangle {
                 width: listView.width
@@ -265,9 +294,24 @@ Item {
                 opacity: modelData.id === root.collapsingId ? 0 : 1
                 scale: modelData.id === root.collapsingId ? 0.75 : 1
 
-                Behavior on height { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
-                Behavior on opacity { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
-                Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+                Behavior on height {
+                    NumberAnimation {
+                        duration: 150
+                        easing.type: Easing.OutCubic
+                    }
+                }
+                Behavior on opacity {
+                    NumberAnimation {
+                        duration: 180
+                        easing.type: Easing.OutCubic
+                    }
+                }
+                Behavior on scale {
+                    NumberAnimation {
+                        duration: 200
+                        easing.type: Easing.OutCubic
+                    }
+                }
 
                 // image preview
                 Image {
@@ -290,15 +334,18 @@ Item {
                     text: modelData.label
                     visible: !modelData.imagePath
                     color: Theme.fg
-                    font { family: Theme.fontFamily; pixelSize: 10 }
+                    font {
+                        family: Theme.fontFamily
+                        pixelSize: 10
+                    }
                     elide: Text.ElideRight
                 }
 
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        root.selectedIndex = index
-                        root.copySelected()
+                        root.selectedIndex = index;
+                        root.copySelected();
                     }
                 }
             }

@@ -10,7 +10,7 @@ stdenv.mkDerivation {
   version = "1.0.0";
   src = builtins.path {
     path = ./.;
-    name = "chillpill-shell-src";
+    name = "nix-pill-src";
     filter =
       path: type:
       let
